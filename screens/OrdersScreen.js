@@ -72,13 +72,13 @@ export default function OrdersScreen() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending':
-        return '#EF4444';
+        return '#FBBF24'; // Amber
       case 'preparing':
-        return '#F59E0B';
+        return '#FF5C2B'; // Pizza Orange
       case 'completed':
-        return '#10B981';
+        return '#22C55E'; // Green
       default:
-        return '#6B7280';
+        return '#9CA3AF';
     }
   };
 
@@ -109,7 +109,7 @@ export default function OrdersScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Lava Pizza Admin</Text>
+        <Text style={styles.headerTitle}>🍕 Lava Pizza Admin</Text>
         <Text style={styles.headerSubtitle}>Orders Dashboard</Text>
       </View>
 
@@ -298,10 +298,10 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#050814',
   },
   header: {
-    backgroundColor: '#DC2626',
+    backgroundColor: '#1A3164',
     padding: 20,
     paddingTop: 10,
   },
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#FEE2E2',
+    color: '#D1D5DB',
     marginTop: 4,
   },
   statsContainer: {
@@ -322,24 +322,21 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#111827',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#1F2937',
   },
   statNumber: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#DC2626',
+    color: '#FFC800',
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#9CA3AF',
     marginTop: 4,
   },
   ordersList: {
@@ -348,15 +345,12 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   orderCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#111827',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#1F2937',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -366,11 +360,11 @@ const styles = StyleSheet.create({
   orderCustomer: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   orderId: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#9CA3AF',
     marginTop: 2,
   },
   orderRight: {
@@ -378,7 +372,7 @@ const styles = StyleSheet.create({
   },
   orderTime: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#9CA3AF',
     marginBottom: 6,
   },
   statusBadge: {
@@ -387,7 +381,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statusText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 11,
     fontWeight: '600',
   },
@@ -395,19 +389,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: '#1F2937',
   },
   orderItemsText: {
     fontSize: 14,
-    color: '#4B5563',
+    color: '#D1D5DB',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B1020',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '85%',
@@ -418,16 +412,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#1F2937',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   modalClose: {
     fontSize: 24,
-    color: '#6B7280',
+    color: '#9CA3AF',
   },
   modalBody: {
     padding: 20,
@@ -438,17 +432,17 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFC800',
     marginBottom: 12,
   },
   detailText: {
     fontSize: 15,
-    color: '#111827',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   detailSubtext: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#D1D5DB',
     marginBottom: 2,
   },
   itemRow: {
@@ -458,11 +452,11 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 14,
-    color: '#111827',
+    color: '#FFFFFF',
   },
   itemPrice: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#D1D5DB',
   },
   totalRow: {
     flexDirection: 'row',
@@ -470,17 +464,17 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: '#1F2937',
   },
   totalLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   totalAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#DC2626',
+    color: '#FF5C2B',
   },
   statusButtons: {
     flexDirection: 'row',
@@ -491,17 +485,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: '#1F2937',
+    backgroundColor: '#111827',
     alignItems: 'center',
   },
   statusButtonActive: {
-    backgroundColor: '#DC2626',
-    borderColor: '#DC2626',
+    backgroundColor: '#FF5C2B',
+    borderColor: '#FF5C2B',
   },
   statusButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6B7280',
+    color: '#9CA3AF',
   },
   statusButtonTextActive: {
     color: '#FFFFFF',

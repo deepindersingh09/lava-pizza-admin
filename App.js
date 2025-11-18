@@ -9,7 +9,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#DC2626" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A3164" />
       <View style={styles.content}>
         {activeTab === 'orders' ? <OrdersScreen /> : <InventoryScreen />}
       </View>
@@ -21,7 +21,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#050814',
   },
   content: {
     flex: 1,

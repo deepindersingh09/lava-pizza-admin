@@ -28,9 +28,9 @@ export default function InventoryScreen() {
   const [newStock, setNewStock] = useState('');
 
   const getStockColor = (stock) => {
-    if (stock <= 5) return '#EF4444';
-    if (stock <= 10) return '#F59E0B';
-    return '#10B981';
+    if (stock <= 5) return '#E62323';
+    if (stock <= 10) return '#FBBF24';
+    return '#22C55E';
   };
 
   const getStockStatus = (stock) => {
@@ -61,7 +61,7 @@ export default function InventoryScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Lava Pizza Admin</Text>
+        <Text style={styles.headerTitle}>🍕 Lava Pizza Admin</Text>
         <Text style={styles.headerSubtitle}>Inventory Management</Text>
       </View>
 
@@ -72,13 +72,13 @@ export default function InventoryScreen() {
           <Text style={styles.statLabel}>Total Items</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statNumber, { color: '#EF4444' }]}>
+          <Text style={[styles.statNumber, { color: '#E62323' }]}>
             {inventory.filter((i) => i.stock <= 5).length}
           </Text>
           <Text style={styles.statLabel}>Low Stock</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={[styles.statNumber, { color: '#10B981' }]}>
+          <Text style={[styles.statNumber, { color: '#22C55E' }]}>
             {inventory.filter((i) => i.stock > 10).length}
           </Text>
           <Text style={styles.statLabel}>In Stock</Text>
@@ -155,6 +155,7 @@ export default function InventoryScreen() {
                     onChangeText={setNewStock}
                     keyboardType="number-pad"
                     placeholder="Enter new stock level"
+                    placeholderTextColor="#9CA3AF"
                   />
 
                   <TouchableOpacity style={styles.updateButton} onPress={updateStock}>
@@ -173,10 +174,10 @@ export default function InventoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#050814',
   },
   header: {
-    backgroundColor: '#DC2626',
+    backgroundColor: '#1A3164',
     padding: 20,
     paddingTop: 10,
   },
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#FEE2E2',
+    color: '#D1D5DB',
     marginTop: 4,
   },
   statsContainer: {
@@ -197,24 +198,21 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#111827',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#1F2937',
   },
   statNumber: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#DC2626',
+    color: '#FFC800',
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
+    color: '#9CA3AF',
     marginTop: 4,
   },
   inventoryList: {
@@ -225,23 +223,20 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFC800',
     marginTop: 16,
     marginBottom: 12,
   },
   itemCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#111827',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#1F2937',
   },
   itemInfo: {
     flex: 1,
@@ -249,11 +244,11 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   itemPrice: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#D1D5DB',
     marginTop: 4,
   },
   itemRight: {
@@ -262,7 +257,7 @@ const styles = StyleSheet.create({
   stockCount: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#FFFFFF',
     marginBottom: 6,
   },
   stockBadge: {
@@ -271,17 +266,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   stockBadgeText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 11,
     fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B1020',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 40,
@@ -292,16 +287,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#1F2937',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: '#FFFFFF',
   },
   modalClose: {
     fontSize: 24,
-    color: '#6B7280',
+    color: '#9CA3AF',
   },
   modalBody: {
     padding: 20,
@@ -309,30 +304,32 @@ const styles = StyleSheet.create({
   itemNameModal: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   currentStock: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#D1D5DB',
     marginBottom: 24,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: '#FFC800',
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: '#1F2937',
+    backgroundColor: '#111827',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    color: '#FFFFFF',
     marginBottom: 20,
   },
   updateButton: {
-    backgroundColor: '#DC2626',
+    backgroundColor: '#FF5C2B',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
