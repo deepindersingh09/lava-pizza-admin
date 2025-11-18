@@ -60,10 +60,10 @@ export default function InventoryScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}> Lava Pizza 🍕</Text>
-        <Text style={styles.headerSubtitle}>Inventory Management</Text>
-      </View>
+<View style={styles.header}>
+  <Text style={styles.headerTitle}>📊 Inventory Management</Text>
+  <Text style={styles.headerSubtitle}>Manage stock levels</Text>
+</View>
 
       {/* Quick Stats */}
       <View style={styles.statsContainer}>

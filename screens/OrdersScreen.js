@@ -107,11 +107,11 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Lava Pizza 🍕 </Text>
-        <Text style={styles.headerSubtitle}>Orders Dashboard</Text>
-      </View>
+     {/* Header */}
+<View style={styles.header}>
+  <Text style={styles.headerTitle}>📦 Orders Dashboard</Text>
+  <Text style={styles.headerSubtitle}>Manage incoming orders</Text>
+</View>
 
       {/* Stats */}
       <View style={styles.statsContainer}>
