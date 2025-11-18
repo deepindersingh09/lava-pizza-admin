@@ -61,7 +61,7 @@ export default function InventoryScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🍕 Lava Pizza Admin</Text>
+        <Text style={styles.headerTitle}> Lava Pizza 🍕</Text>
         <Text style={styles.headerSubtitle}>Inventory Management</Text>
       </View>
 
