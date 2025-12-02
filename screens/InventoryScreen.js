@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,29 +8,42 @@ import {
   TextInput,
   Modal,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/Colors';
+import InventoryService from '../services/InventoryService';
+import NotificationService from '../services/NotificationService';
 
-const MOCK_INVENTORY = [
-  { id: '1', name: 'Pepperoni Pizza', stock: 15, category: 'Pizza', price: 18.99, reorderPoint: 10 },
-  { id: '2', name: 'Margherita Pizza', stock: 8, category: 'Pizza', price: 16.99, reorderPoint: 10 },
-  { id: '3', name: 'BBQ Chicken Pizza', stock: 12, category: 'Pizza', price: 19.99, reorderPoint: 10 },
-  { id: '4', name: 'Hawaiian Pizza', stock: 10, category: 'Pizza', price: 17.99, reorderPoint: 10 },
-  { id: '5', name: 'Garlic Bread', stock: 25, category: 'Sides', price: 6.99, reorderPoint: 20 },
-  { id: '6', name: 'Caesar Salad', stock: 18, category: 'Salads', price: 8.99, reorderPoint: 15 },
-  { id: '7', name: 'Wings', stock: 30, category: 'Sides', price: 14.99, reorderPoint: 20 },
-  { id: '8', name: 'Mozzarella Sticks', stock: 22, category: 'Sides', price: 7.99, reorderPoint: 15 },
-  { id: '9', name: 'Coke', stock: 50, category: 'Drinks', price: 2.99, reorderPoint: 30 },
-  { id: '10', name: 'Sprite', stock: 45, category: 'Drinks', price: 2.99, reorderPoint: 30 },
-  { id: '11', name: 'Pepsi', stock: 3, category: 'Drinks', price: 2.99, reorderPoint: 30 },
-  { id: '12', name: 'Chocolate Lava Cake', stock: 6, category: 'Desserts', price: 8.99, reorderPoint: 10 },
-];
-
-export default function InventoryScreen() {
-  const [inventory, setInventory] = useState(MOCK_INVENTORY);
+export default function InventoryScreenDynamic() {
+  const [inventory, setInventory] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
   const [newStock, setNewStock] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Subscribe to real-time inventory updates
+  useEffect(() => {
+    const unsubscribe = InventoryService.subscribeToInventory((items, error) => {
+      setLoading(false);
+      if (error) {
+        Alert.alert('Error', 'Failed to load inventory');
+        console.error(error);
+      } else {
+        setInventory(items);
+        
+        // Check for low stock and send alerts
+        items.forEach(item => {
+          if (item.stock <= 0) {
+            NotificationService.alertOutOfStock(item);
+          } else if (item.stock <= item.reorderPoint * 0.3) {
+            NotificationService.alertLowStock(item);
+          }
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const getStockColor = (stock, reorderPoint) => {
     if (stock <= reorderPoint * 0.3) return COLORS.inventory.outOfStock;
@@ -44,7 +57,7 @@ export default function InventoryScreen() {
     return 'Good';
   };
 
-  const updateStock = () => {
+  const updateStock = async () => {
     if (!newStock || !selectedItem) return;
 
     const stockValue = parseInt(newStock);
@@ -53,15 +66,14 @@ export default function InventoryScreen() {
       return;
     }
 
-    setInventory(
-      inventory.map((item) =>
-        item.id === selectedItem.id ? { ...item, stock: stockValue } : item
-      )
-    );
-
-    Alert.alert('Success', `Updated stock for ${selectedItem.name}`);
-    setSelectedItem(null);
-    setNewStock('');
+    try {
+      await InventoryService.updateStock(selectedItem.id, stockValue, 'manual_adjustment');
+      Alert.alert('Success', `Updated stock for ${selectedItem.name}`);
+      setSelectedItem(null);
+      setNewStock('');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update stock: ' + error.message);
+    }
   };
 
   const categories = [...new Set(inventory.map((item) => item.category))];
@@ -80,6 +92,21 @@ export default function InventoryScreen() {
     (item) =>
       item.stock > item.reorderPoint * 0.3 && item.stock <= item.reorderPoint * 0.7
   ).length;
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>🍕 Lava Pizza</Text>
+          <Text style={styles.headerSubtitle}>Inventory Management</Text>
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.brand.primaryOrange} />
+          <Text style={styles.loadingText}>Loading inventory...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -169,6 +196,7 @@ export default function InventoryScreen() {
         })}
       </ScrollView>
 
+      {/* Update Stock Modal */}
       <Modal
         visible={selectedItem !== null}
         animationType="slide"
@@ -250,13 +278,14 @@ export default function InventoryScreen() {
   );
 }
 
+// Styles remain the same as your original InventoryScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background.primary,
   },
   header: {
-    backgroundColor: COLORS.brand.lavaRed,
+    backgroundColor: COLORS.brand.primaryOrange,
     padding: SPACING.xl,
     paddingTop: SPACING.md,
   },
@@ -270,6 +299,16 @@ const styles = StyleSheet.create({
     color: COLORS.text.secondary,
     marginTop: SPACING.xs,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: SPACING.lg,
+    fontSize: TYPOGRAPHY.sizes.base,
+    color: COLORS.text.tertiary,
+  },
   statsContainer: {
     flexDirection: 'row',
     padding: SPACING.lg,
@@ -282,12 +321,12 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border.light,
+    borderColor: COLORS.border.primary,
   },
   statNumber: {
     fontSize: 28,
     fontWeight: TYPOGRAPHY.weights.bold,
-    color: COLORS.brand.lavaYellow,
+    color: COLORS.brand.goldenYellow,
   },
   statLabel: {
     fontSize: TYPOGRAPHY.sizes.sm,
@@ -307,7 +346,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.sizes.base,
     color: COLORS.text.primary,
     borderWidth: 1,
-    borderColor: COLORS.border.light,
+    borderColor: COLORS.border.primary,
   },
   clearButton: {
     position: 'absolute',
@@ -327,7 +366,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: TYPOGRAPHY.sizes.xl,
     fontWeight: TYPOGRAPHY.weights.semibold,
-    color: COLORS.brand.lavaYellow,
+    color: COLORS.brand.goldenYellow,
     marginTop: SPACING.lg,
     marginBottom: SPACING.md,
   },
@@ -340,7 +379,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border.light,
+    borderColor: COLORS.border.primary,
   },
   itemInfo: {
     flex: 1,
@@ -391,7 +430,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: SPACING.xl,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border.light,
+    borderBottomColor: COLORS.border.primary,
   },
   modalTitle: {
     fontSize: TYPOGRAPHY.sizes.xxl,
@@ -447,12 +486,12 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: TYPOGRAPHY.sizes.base,
     fontWeight: TYPOGRAPHY.weights.semibold,
-    color: COLORS.brand.lavaYellow,
+    color: COLORS.brand.goldenYellow,
     marginBottom: SPACING.sm,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border.light,
+    borderColor: COLORS.border.primary,
     backgroundColor: COLORS.background.tertiary,
     borderRadius: RADIUS.md,
     padding: SPACING.md,
@@ -471,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border.light,
+    borderColor: COLORS.border.primary,
   },
   cancelButtonText: {
     color: COLORS.text.primary,
@@ -480,7 +519,7 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     flex: 1,
-    backgroundColor: COLORS.brand.lavaRed,
+    backgroundColor: COLORS.brand.primaryOrange,
     padding: SPACING.lg,
     borderRadius: RADIUS.md,
     alignItems: 'center',

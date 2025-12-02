@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, StatusBar, Platform, ActivityIndicator, Text } from 'react-native';
-import OrdersScreen from './screens/OrdersScreen';
-import InventoryScreen from './screens/InventoryScreen';
-import AnalyticsScreen from './screens/AnalyticsScreen';
-import AlertScreen from './screens/AlertScreen';
-import CustomerScreen from './screens/CustomerScreen';
+import OrdersScreen from './screens/OrdersScreenFirebase';  // ✅ Use Firebase version
+import InventoryScreen from './screens/InventoryScreen';  // We'll create this
+import AnalyticsScreen from './screens/AnalyticsScreen';  // We'll create this
+// import AlertScreen from './screens/AlertScreenDynamic';  // We'll create this
+import CustomerScreen from './screens/CustomerScreen';  // We'll create this
 import LoginScreen from './screens/LoginScreen';
 import TabBar from './components/TabBar';
 import AuthService from './services/AuthService';
+import NotificationService from './services/NotificationService';
 import { COLORS } from './constants/Colors';
 
 export default function App() {
@@ -16,12 +17,23 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Initialize auth
     const unsubscribe = AuthService.initializeAuthListener((user, error) => {
       setLoading(false);
       setIsAuthenticated(!!user);
+      
+      // Initialize notifications if authenticated
+      if (user) {
+        NotificationService.initialize().catch(err => {
+          console.warn('Notifications not available:', err.message);
+        });
+      }
     });
 
-    return () => AuthService.cleanup();
+    return () => {
+      AuthService.cleanup();
+      NotificationService.cleanup();
+    };
   }, []);
 
   if (loading) {
