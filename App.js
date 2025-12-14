@@ -1,9 +1,12 @@
+// MUST BE FIRST - Initialize Firebase before anything else
+import './firebase/config';
+
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, StatusBar, Platform, ActivityIndicator, Text } from 'react-native';
 import OrdersScreen from './screens/OrdersScreenFirebase';  // ✅ Use Firebase version
 import InventoryScreen from './screens/InventoryScreen';  // We'll create this
 import AnalyticsScreen from './screens/AnalyticsScreen';  // We'll create this
-// import AlertScreen from './screens/AlertScreenDynamic';  // We'll create this
+import AlertScreen from './screens/AlertScreen';  // Placeholder screen
 import CustomerScreen from './screens/CustomerScreen';  // We'll create this
 import LoginScreen from './screens/LoginScreen';
 import TabBar from './components/TabBar';
