@@ -32,8 +32,8 @@ class OrderService {
     try {
       let ordersQuery = collection(db, ORDERS_COLLECTION);
       
-      // Apply filters
-      const constraints = [orderBy('timestamp', 'desc')];
+      // Apply filters - FIXED: Changed from 'timestamp' to 'createdAt'
+      const constraints = [orderBy('createdAt', 'desc')];
       
       if (filters.status) {
         constraints.unshift(where('status', '==', filters.status));
@@ -51,10 +51,12 @@ class OrderService {
         (snapshot) => {
           const orders = [];
           snapshot.forEach((doc) => {
+            const data = doc.data();
             orders.push({
               id: doc.id,
-              ...doc.data(),
-              timestamp: doc.data().timestamp?.toDate() || new Date(),
+              ...data,
+              // Handle both createdAt and old timestamp field
+              timestamp: data.createdAt?.toDate() || data.timestamp?.toDate() || new Date(),
             });
           });
           callback(orders, null);
@@ -82,7 +84,8 @@ class OrderService {
     try {
       let ordersQuery = collection(db, ORDERS_COLLECTION);
       
-      const constraints = [orderBy('timestamp', 'desc')];
+      // FIXED: Changed from 'timestamp' to 'createdAt'
+      const constraints = [orderBy('createdAt', 'desc')];
       
       if (filters.status) {
         constraints.unshift(where('status', '==', filters.status));
@@ -98,10 +101,12 @@ class OrderService {
       const orders = [];
       
       snapshot.forEach((doc) => {
+        const data = doc.data();
         orders.push({
           id: doc.id,
-          ...doc.data(),
-          timestamp: doc.data().timestamp?.toDate() || new Date(),
+          ...data,
+          // Handle both createdAt and old timestamp field
+          timestamp: data.createdAt?.toDate() || data.timestamp?.toDate() || new Date(),
         });
       });
       
@@ -122,10 +127,12 @@ class OrderService {
       const orderDoc = await getDoc(doc(db, ORDERS_COLLECTION, orderId));
       
       if (orderDoc.exists()) {
+        const data = orderDoc.data();
         return {
           id: orderDoc.id,
-          ...orderDoc.data(),
-          timestamp: orderDoc.data().timestamp?.toDate() || new Date(),
+          ...data,
+          // Handle both createdAt and old timestamp field
+          timestamp: data.createdAt?.toDate() || data.timestamp?.toDate() || new Date(),
         };
       }
       
@@ -199,20 +206,23 @@ class OrderService {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
+      // FIXED: Changed from 'timestamp' to 'createdAt'
       const ordersQuery = query(
         collection(db, ORDERS_COLLECTION),
-        where('timestamp', '>=', Timestamp.fromDate(today)),
-        orderBy('timestamp', 'desc')
+        where('createdAt', '>=', Timestamp.fromDate(today)),
+        orderBy('createdAt', 'desc')
       );
       
       const snapshot = await getDocs(ordersQuery);
       const orders = [];
       
       snapshot.forEach((doc) => {
+        const data = doc.data();
         orders.push({
           id: doc.id,
-          ...doc.data(),
-          timestamp: doc.data().timestamp?.toDate() || new Date(),
+          ...data,
+          // Handle both createdAt and old timestamp field
+          timestamp: data.createdAt?.toDate() || data.timestamp?.toDate() || new Date(),
         });
       });
       
@@ -231,21 +241,24 @@ class OrderService {
    */
   async getOrdersByDateRange(startDate, endDate) {
     try {
+      // FIXED: Changed from 'timestamp' to 'createdAt'
       const ordersQuery = query(
         collection(db, ORDERS_COLLECTION),
-        where('timestamp', '>=', Timestamp.fromDate(startDate)),
-        where('timestamp', '<=', Timestamp.fromDate(endDate)),
-        orderBy('timestamp', 'desc')
+        where('createdAt', '>=', Timestamp.fromDate(startDate)),
+        where('createdAt', '<=', Timestamp.fromDate(endDate)),
+        orderBy('createdAt', 'desc')
       );
       
       const snapshot = await getDocs(ordersQuery);
       const orders = [];
       
       snapshot.forEach((doc) => {
+        const data = doc.data();
         orders.push({
           id: doc.id,
-          ...doc.data(),
-          timestamp: doc.data().timestamp?.toDate() || new Date(),
+          ...data,
+          // Handle both createdAt and old timestamp field
+          timestamp: data.createdAt?.toDate() || data.timestamp?.toDate() || new Date(),
         });
       });
       
