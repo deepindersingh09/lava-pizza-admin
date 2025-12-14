@@ -34,7 +34,7 @@ export default function HomeScreen({ onNavigate }) {
 
         <TouchableOpacity
           style={[styles.menuButton, styles.inventoryButton]}
-          onPress={() => onNavigate('inventory')}
+          onPress={() => onNavigate('menu screen')}
         >
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>📊</Text>
