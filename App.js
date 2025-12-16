@@ -4,7 +4,7 @@ import './firebase/config';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, StatusBar, Platform, ActivityIndicator, Text } from 'react-native';
 import OrdersScreen from './screens/OrdersScreenFirebase';  // ✅ Use Firebase version
-import InventoryScreen from './screens/MenuScreen';  // We'll create this
+import MenuScreenDynamic from './screens/MenuScreen';  // We'll create this
 import AnalyticsScreen from './screens/AnalyticsScreen';  // We'll create this
 import AlertScreen from './screens/AlertScreen';  // Placeholder screen
 import CustomerScreen from './screens/CustomerScreen';  // We'll create this
@@ -58,7 +58,7 @@ export default function App() {
       case 'analytics': return <AnalyticsScreen />;
       case 'alerts': return <AlertScreen />;
       case 'customers': return <CustomerScreen />;
-      case 'menu': return <InventoryScreen />;
+      case 'menu': return <MenuScreenDynamic />;
       default: return <OrdersScreen />;
     }
   };

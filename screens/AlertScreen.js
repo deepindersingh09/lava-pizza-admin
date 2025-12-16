@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,56 +7,49 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const MOCK_ALERTS = [
-  {
-    id: '1',
-    type: 'urgent',
-    icon: '🚨',
-    title: 'Critical Stock Alert',
-    message: 'Pepsi is critically low (3 items). Reorder immediately!',
-    time: '2 min ago',
-    read: false,
-  },
-  {
-    id: '2',
-    type: 'order',
-    icon: '📦',
-    title: 'New Order Received',
-    message: 'Order #1005 from Michael Smith - $45.99',
-    time: '5 min ago',
-    read: false,
-  },
-  {
-    id: '3',
-    type: 'success',
-    icon: '✅',
-    title: 'Order Completed',
-    message: 'Order #1003 delivered successfully',
-    time: '15 min ago',
-    read: true,
-  },
-  {
-    id: '4',
-    type: 'warning',
-    icon: '⚠️',
-    title: 'Low Stock Warning',
-    message: '5 items are running low. Check inventory.',
-    time: '1 hour ago',
-    read: true,
-  },
-];
+import {
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+  orderBy,
+  query,
+} from 'firebase/firestore';
+
+import { db } from '../firebase/config';
 
 export default function AlertsScreen() {
-  const [alerts, setAlerts] = useState(MOCK_ALERTS);
-  
-  const unreadCount = alerts.filter((a) => !a.read).length;
+  const [alerts, setAlerts] = useState([]);
 
-  const markAsRead = (id) => {
-    setAlerts(
-      alerts.map((alert) =>
-        alert.id === id ? { ...alert, read: true } : alert
-      )
+  /* 🔥 REAL-TIME ALERTS */
+  useEffect(() => {
+    const q = query(
+      collection(db, 'alerts'),
+      orderBy('createdAt', 'desc')
     );
+
+    const unsub = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+      }));
+      setAlerts(data);
+    });
+
+    return () => unsub();
+  }, []);
+
+  const unreadCount = alerts.filter(a => !a.read).length;
+
+  /* ✅ MARK ALERT AS READ */
+  const markAsRead = async (alertId) => {
+    try {
+      await updateDoc(doc(db, 'alerts', alertId), {
+        read: true,
+      });
+    } catch (err) {
+      console.log('Failed to mark as read');
+    }
   };
 
   return (
@@ -71,7 +64,7 @@ export default function AlertsScreen() {
       </View>
 
       <ScrollView style={styles.alertsList}>
-        {alerts.map((alert) => (
+        {alerts.map(alert => (
           <TouchableOpacity
             key={alert.id}
             style={[
@@ -79,26 +72,33 @@ export default function AlertsScreen() {
               !alert.read && styles.alertCardUnread,
             ]}
             onPress={() => markAsRead(alert.id)}
-            activeOpacity={0.7}
           >
             <View style={styles.iconContainer}>
               <Text style={styles.alertIcon}>{alert.icon}</Text>
             </View>
+
             <View style={styles.alertContent}>
               <View style={styles.alertHeader}>
                 <Text style={styles.alertTitle}>{alert.title}</Text>
                 {!alert.read && <View style={styles.unreadDot} />}
               </View>
               <Text style={styles.alertMessage}>{alert.message}</Text>
-              <Text style={styles.alertTime}>{alert.time}</Text>
+              <Text style={styles.alertTime}>
+                {alert.createdAt?.toDate?.().toLocaleString()}
+              </Text>
             </View>
           </TouchableOpacity>
         ))}
+
+        {alerts.length === 0 && (
+          <Text style={{ textAlign: 'center', marginTop: 40 }}>
+            No alerts yet
+          </Text>
+        )}
       </ScrollView>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
